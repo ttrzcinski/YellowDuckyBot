@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Bot;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Core.Extensions;
@@ -27,8 +28,39 @@ namespace YellowDuckyBot
                 // Bump the turn count. 
                 state.TurnCount++;
 
+                //User has sent/asked
+                Console.WriteLine($"User sent: {context.Activity.Text}");
+
+                String response = "";
+                switch (context.Activity.Text.ToLower())
+                {
+                    case "hello":
+                        response = "Hello to You!";
+                        break;
+
+                    case "f**k you":
+                        response = "..and F**k you too!";
+                        break;
+
+                    case "exit":
+                        response = "Do I look like a Shell console?";
+                        break;
+
+                    case "quit":
+                        response = "Do I look like a Unix console?";
+                        break;
+
+                    case "what is sense of life?":
+                        response = "42. Read an Adam's book..";
+                        break;
+
+                    default:
+                        response = "I didn't get this one. Can You repeat in simpler words.";
+                        break;
+                }
+
                 // Echo back to the user whatever they typed.
-                await context.SendActivity($"Turn {state.TurnCount}: You sent '{context.Activity.Text}'");
+                await context.SendActivity(response);//Turn {state.TurnCount}: 
             }
         }
     }    
