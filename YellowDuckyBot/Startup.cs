@@ -30,7 +30,7 @@ namespace YellowDuckyBot
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddBot<EchoBot>(options =>
+            services.AddBot<YellowDuckyBot>(options =>
             {
                 options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);
 
@@ -41,7 +41,7 @@ namespace YellowDuckyBot
                 // an "Ooops" message is sent. 
                 options.Middleware.Add(new CatchExceptionMiddleware<Exception>(async (context, exception) =>
                 {
-                    await context.TraceActivity("EchoBot Exception", exception);
+                    await context.TraceActivity("YellowDuckyBot Exception", exception);
                     await context.SendActivity("Sorry, it looks like something went wrong!");
                 }));
 
