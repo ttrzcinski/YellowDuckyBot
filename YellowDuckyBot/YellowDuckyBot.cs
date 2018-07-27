@@ -12,8 +12,7 @@ namespace YellowDuckyBot
     public class YellowDuckyBot : IBot
     {
         // Variables
-        private bool playingLycopersicon = false;
-
+        
         /// <summary>
         /// Every Conversation turn for our YellowDuckyBot will call this method. In here
         /// the bot checks the Activty type to verify it's a message, bumps the 
@@ -24,6 +23,10 @@ namespace YellowDuckyBot
         /// for processing this conversation turn. </param>        
         public async Task OnTurn(ITurnContext context)
         {
+            // TODO: MOVE OUTSIDE THE CLASS IN MEMORY MODULE
+            bool playingLycopersicon = false;
+            bool ping = false;
+
             //Prepared response to send back to user
             String response = null;//context.Activity.Text;
 
@@ -68,6 +71,10 @@ namespace YellowDuckyBot
                             response = "..and F**k you too!";
                             break;
 
+                        case "ping":
+                            ping = true;
+                            break;
+
                         case "exit":
                             response = "Do I look like a Shell console?";
                             break;
@@ -82,6 +89,24 @@ namespace YellowDuckyBot
 
                         case "can you help me with my code?":
                             response = "Sure, decribe me in details your problem.";
+                            break;
+
+                        case "roll d20":
+                            Random random = new Random();
+                            var lastRoll = random.Next(1, 20);
+                            //this.count++;
+                            if (lastRoll == 1)
+                            {
+                                response = $"You rolled {lastRoll}. Critical Failure!";
+                            }
+                            else if (lastRoll == 20)
+                            {
+                                response = $"You rolled {lastRoll}. Critical Success!";
+                            }
+                            else
+                            {
+                                response = $"You rolled {lastRoll}.";
+                            }
                             break;
 
                         case "where are you?":
@@ -132,7 +157,21 @@ namespace YellowDuckyBot
             }
             else if (context.Activity.Type == ActivityTypes.Ping)
             {
-                response = "Yup, I'm alive.. I mean On.";
+                ping = true;
+            }
+
+            //if pinged
+            if (ping == true)
+            {
+                //Add responses in parts with delay in between
+                response = "Ping..";
+                await context.SendActivity(response);
+                await Task.Delay(2000);//wait 2 seconds
+                response = "Yup, I'm alive..";
+                await context.SendActivity(response);
+                await Task.Delay(1500);//wait 2 seconds
+                response = "I mean On.";
+                //await context.SendActivity(response);
             }
 
             //Send response to user
@@ -141,5 +180,5 @@ namespace YellowDuckyBot
                 await context.SendActivity(response); //Turn {state.TurnCount}: 
             }
         }
-    }    
+    }
 }
