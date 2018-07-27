@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Bot;
 using Microsoft.Bot.Builder;
@@ -53,6 +55,27 @@ namespace YellowDuckyBot
                     case "what is sense of life?":
                         response = "42. Read an Adam's book..";
                         break;
+
+                    case "can you help me with my code?":
+                        response = "Sure, decribe me in details your problem.";
+                        break;
+
+                    case "where are you?":
+                        string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+                        response = path;
+                        break;
+
+                    /*case "what do you see?":
+                        //Environment.CurrentDirectory
+                        string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"wwwroot\");
+                        string[] files = Directory.GetFiles(path);
+                        response = $"Well, I see {files.Length} files around me.";
+                        foreach (string filename in files)
+                        {
+                            response += $"\n {filename}";
+                        }
+                        //string[] files = File.ReadAllLines(path);
+                        break;*/
 
                     default:
                         response = "I didn't get this one. Can You repeat in simpler words.";
