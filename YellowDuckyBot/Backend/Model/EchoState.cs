@@ -1,4 +1,4 @@
-﻿namespace YellowDuckyBot
+﻿namespace YellowDuckyBot.Backend.Model
 {
     /// <summary>
     /// Class for storing conversation state. 

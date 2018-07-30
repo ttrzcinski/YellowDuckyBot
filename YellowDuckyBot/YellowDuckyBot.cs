@@ -6,12 +6,15 @@ using Microsoft.Bot;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Core.Extensions;
 using Microsoft.Bot.Schema;
+using YellowDuckyBot.Backend;
+using YellowDuckyBot.Backend.Model;
 
 namespace YellowDuckyBot
 {
     public class YellowDuckyBot : IBot
     {
         // Variables
+        Mind mind = Mind.Instance;
         
         /// <summary>
         /// Every Conversation turn for our YellowDuckyBot will call this method. In here
@@ -40,6 +43,14 @@ namespace YellowDuckyBot
                 }
                 else
                 {
+                    //Load retorts from JSON file
+                    response = mind.Respond(context.Activity.Text.ToLower());//"
+                    //Console.WriteLine($"Read {answer}.");
+                    if (response != null)
+                    {
+                        await context.SendActivity(response);
+                        return;
+                    }
 
                     // Get the conversation state from the turn context
                     var state = context.GetConversationState<EchoState>();
@@ -50,7 +61,7 @@ namespace YellowDuckyBot
                     //User has sent/asked
                     Console.WriteLine($"User sent: {context.Activity.Text}");
 
-                    response = "";
+                    //
                     switch (context.Activity.Text.ToLower())
                     {
                         case "hello":
@@ -67,14 +78,15 @@ namespace YellowDuckyBot
                             response = "Ha ha, you lost.";
                             break;
 
-                        case "f**k you":
-                            response = "..and F**k you too!";
-                            break;
-
                         case "ping":
                             ping = true;
                             break;
 
+                        /*case "f**k you":
+                            response = "..and F**k you too!";
+                            break;
+
+                        
                         case "exit":
                             response = "Do I look like a Shell console?";
                             break;
@@ -89,7 +101,7 @@ namespace YellowDuckyBot
 
                         case "can you help me with my code?":
                             response = "Sure, decribe me in details your problem.";
-                            break;
+                            break;*/
 
                         case "roll d20":
                             Random random = new Random();

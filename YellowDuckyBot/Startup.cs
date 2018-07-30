@@ -7,6 +7,8 @@ using Microsoft.Bot.Builder.Integration.AspNet.Core;
 using Microsoft.Bot.Builder.TraceExtensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using YellowDuckyBot.Backend;
+using YellowDuckyBot.Backend.Model;
 
 namespace YellowDuckyBot
 {
@@ -30,6 +32,10 @@ namespace YellowDuckyBot
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Creates new Mind to hold knowledge and reponses
+            Mind mind = Mind.Instance;
+            mind.LoadRetorts();
+
             services.AddBot<YellowDuckyBot>(options =>
             {
                 options.CredentialProvider = new ConfigurationCredentialProvider(Configuration);

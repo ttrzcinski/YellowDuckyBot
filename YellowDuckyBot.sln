@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YellowDuckyBot", "YellowDuckyBot\YellowDuckyBot.csproj", "{09E51409-3956-4D3D-9E39-538411418701}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YellowDuckyBot", "YellowDuckyBot\YellowDuckyBot.csproj", "{09E51409-3956-4D3D-9E39-538411418701}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{6183C8C8-35D3-47D1-834C-945F87E33E34}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{09E51409-3956-4D3D-9E39-538411418701}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{09E51409-3956-4D3D-9E39-538411418701}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{09E51409-3956-4D3D-9E39-538411418701}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6183C8C8-35D3-47D1-834C-945F87E33E34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6183C8C8-35D3-47D1-834C-945F87E33E34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6183C8C8-35D3-47D1-834C-945F87E33E34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6183C8C8-35D3-47D1-834C-945F87E33E34}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

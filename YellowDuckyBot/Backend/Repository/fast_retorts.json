@@ -1,0 +1,27 @@
+﻿[
+  {
+    "id": 0,
+    "question": "f**k you",
+    "answer": "..and F**k you too!"
+  },
+  {
+    "id": 1,
+    "question": "quit",
+    "answer": "Do I look like a Unix console?"
+  },
+  {
+    "id": 1,
+    "question": "exit",
+    "entry": "Do I look like a Shell console?"
+  },
+  {
+    "id": 1,
+    "question": "what is sense of life?",
+    "entry": "42. Read an Adam's book.."
+  },
+  {
+    "id": 1,
+    "question": "can you help me with my code?",
+    "entry": "Sure, decribe me in details your problem."
+  }
+]
