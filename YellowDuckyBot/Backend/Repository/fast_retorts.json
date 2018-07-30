@@ -6,22 +6,22 @@
   },
   {
     "id": 1,
+    "question": "can you help me with my code?",
+    "answer": "Sure, decribe me in details your problem."
+  },
+  {
+    "id": 2,
     "question": "quit",
     "answer": "Do I look like a Unix console?"
   },
   {
-    "id": 1,
+    "id": 3,
     "question": "exit",
-    "entry": "Do I look like a Shell console?"
+    "answer": "Do I look like a Shell console?"
   },
   {
-    "id": 1,
+    "id": 4,
     "question": "what is sense of life?",
-    "entry": "42. Read an Adam's book.."
-  },
-  {
-    "id": 1,
-    "question": "can you help me with my code?",
-    "entry": "Sure, decribe me in details your problem."
+    "answer": "42. Read an Adam's book.."
   }
 ]

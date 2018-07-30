@@ -93,7 +93,7 @@ namespace YellowDuckyBot.Backend
                 if (retorts[i].Question.ToLower().Equals(question))
                 {
                     response = retorts[i].Answer;
-                    break;
+                    return response;
                 }
             }
             //Return found response

@@ -44,8 +44,7 @@ namespace YellowDuckyBot
                 else
                 {
                     //Load retorts from JSON file
-                    response = mind.Respond(context.Activity.Text.ToLower());//"
-                    //Console.WriteLine($"Read {answer}.");
+                    response = mind.Respond(context.Activity.Text.ToLower());
                     if (response != null)
                     {
                         await context.SendActivity(response);
@@ -68,6 +67,12 @@ namespace YellowDuckyBot
                             response = "Hello to You!";
                             break;
 
+                        // TODO Add some admin-mode with prior authorization
+                        // TODO Add console entry level of extending retords
+                        case "how many retorts?":
+                            response = $"{mind.CountRetorts()} Retorts in my mind.";
+                            break;
+
                         case "let's play lycopersicon":
                             playingLycopersicon = true;
                             response = "Lycopersicon";
@@ -81,27 +86,6 @@ namespace YellowDuckyBot
                         case "ping":
                             ping = true;
                             break;
-
-                        /*case "f**k you":
-                            response = "..and F**k you too!";
-                            break;
-
-                        
-                        case "exit":
-                            response = "Do I look like a Shell console?";
-                            break;
-
-                        case "quit":
-                            response = "Do I look like a Unix console?";
-                            break;
-
-                        case "what is sense of life?":
-                            response = "42. Read an Adam's book..";
-                            break;
-
-                        case "can you help me with my code?":
-                            response = "Sure, decribe me in details your problem.";
-                            break;*/
 
                         case "roll d20":
                             Random random = new Random();
