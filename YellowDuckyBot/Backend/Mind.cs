@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using YellowDuckyBot.Backend.Model;
 
 namespace YellowDuckyBot.Backend
@@ -14,14 +15,19 @@ namespace YellowDuckyBot.Backend
         // TODO Should be externalized and references with relative path.
         
         /// <summary>
-        /// Hardcoded path to fast retorts.
+        /// Hardcoded path to fast retorts file.
         /// </summary>
-        private const string FullPath = "C:\\vsproj\\YellowDuckyBot\\YellowDuckyBot\\YellowDuckyBot\\Backend\\Repository\\fast_retorts.json";
+        private const string RetortsFullPath = "C:\\vsproj\\YellowDuckyBot\\YellowDuckyBot\\YellowDuckyBot\\Backend\\Repository\\fast_retorts.json";
         
         /// <summary>
         /// Retorts as quick responses to questions.
         /// </summary>
         private List<Retort> _retorts;
+
+        /// <summary>
+        /// Retort's the highest id.
+        /// </summary>
+        private int _retortsMaxId = -1;
 
         /// <summary>
         /// Holds the only instance of this class.
@@ -67,35 +73,34 @@ namespace YellowDuckyBot.Backend
             // TODO: Fix the path top search from within the project
             // TODO: Change to relative path
             
-            using (var reader = new StreamReader(FullPath))
+            using (var reader = new StreamReader(RetortsFullPath))
             {
                 var json = reader.ReadToEnd();
                 var items = JsonConvert.DeserializeObject<List<Retort>>(json);
                 _retorts = items;
+                
+                //Refresh _retortsMaxId
+                this.FindMaxRetortsId();
             }
         }
 
         /// <summary>
-        /// Goes through list of retorts in order to find the top id.
+        /// Finds the highest id from retorts.
         /// </summary>
-        /// <returns>the highest id of retorts</returns>
-        private int GetMaxId()
+        private void FindMaxRetortsId()
         {
-            //TODO move this class to load retorts
-            var id = -1;
-            if (_retorts == null || _retorts.Count == 0) return id;
-            foreach (var retort in _retorts)
+            _retortsMaxId = _retorts.Select(t => t.Id).OrderByDescending(t => t).FirstOrDefault() + 1;
+            
+            /*if (_retorts != null && _retorts.Count > 0)
             {
-                if (retort.Id > id)
+                foreach (var retort in _retorts)
                 {
-                    id = retort.Id;
+                    if (_retortsMaxId < retort.Id)
+                    {
+                        _retortsMaxId = retort.Id;
+                    }   
                 }
-            }
-            /*else
-            {
-                return id;
             }*/
-            return id;
         }
 
         /// <summary>
@@ -112,18 +117,19 @@ namespace YellowDuckyBot.Backend
                 return false;
             }
 
-            var added = new Retort {Id = GetMaxId() + 1, Question = question, Answer = answer};
+            var added = new Retort {Id = _retortsMaxId + 1, Question = question, Answer = answer};
 
             // TODO Make a local copy of file faat retorts 
 
             bool endFlag;
-            // TODO Open file of retorts for edit and add it at the end
-            using (var writer = new StreamWriter(FullPath))
+            // Opens file of retorts for edit and add it at the end
+            using (var writer = new StreamWriter(RetortsFullPath))
             {
                 _retorts.Add(added);
                 writer.Write(_retorts);
                 writer.Flush();
                 endFlag = true;
+                _retortsMaxId++;
             }
 
             // TODO Add retort to retorts file
@@ -162,6 +168,15 @@ namespace YellowDuckyBot.Backend
         /// </summary>
         /// <returns>counts, if there are some retorts, on null returns 0</returns>
         public int CountRetorts()
+        {
+            return _retorts?.Count ?? 0;
+        }
+        
+        /// <summary>
+        /// Returns top id of all retorts.
+        /// </summary>
+        /// <returns>top id, if there are some retorts, on null or empty returns 0</returns>
+        public int CountRetortsMaxId()
         {
             return _retorts?.Count ?? 0;
         }

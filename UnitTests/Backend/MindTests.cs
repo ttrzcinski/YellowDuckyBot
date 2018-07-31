@@ -58,5 +58,27 @@ namespace UnitTests.Backend
             // Assert
             Assert.False(actual);
         }
+        
+        [Fact]
+        public void CountRetortsAreSomeTest()
+        {
+            // Align
+            var mind = Mind.Instance;
+            // Act
+            var actual = mind.CountRetorts();
+            // Assert
+            Assert.NotEqual(actual, 0);
+        }
+        
+        [Fact]
+        public void CountRetortsMaxIdHasValueTest()
+        {
+            // Align
+            var mind = Mind.Instance;
+            // Act
+            var actual = mind.CountRetortsMaxId();
+            // Assert
+            Assert.NotEqual(actual, 0);
+        }
     }
 }
