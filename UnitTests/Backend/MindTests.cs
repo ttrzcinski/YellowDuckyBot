@@ -10,10 +10,10 @@ namespace UnitTests.Backend
     public class MindTests
     {
         [Fact]
-        public void LoadsJSONTest()
+        public void LoadsJsonTest()
         {
             // Align
-            Mind mind = Mind.Instance;
+            var mind = Mind.Instance;
             // Act
             //
             // Assert
@@ -27,22 +27,36 @@ namespace UnitTests.Backend
         public void FindsAnswerTest(string question, string expectedAnswer)
         {
             // Align
-            Mind mind = Mind.Instance;
+            var mind = Mind.Instance;
             // Act
-            String answer = mind.Respond(question);
+            var answer = mind.Respond(question);
             // Assert
             Assert.Equal(answer, expectedAnswer);
         }
 
         [Fact]
-        public void FindNonwexistingAnswerTest()
+        public void FindNonExistingAnswerTest()
+        {
+            // Align
+            var mind = Mind.Instance;
+            // Act
+            var answer = mind.Respond("quit222");
+            // Assert
+            Assert.Null(answer);
+        }
+        
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData("smt", null)]
+        [InlineData(null, "smt")]
+        public void AddRetortWithNullsTest(string question, string answer)
         {
             // Align
             Mind mind = Mind.Instance;
             // Act
-            String answer = mind.Respond("quit222");
+            var actual = mind.AddRetort(question, answer);
             // Assert
-            Assert.Null(answer);
+            Assert.False(actual);
         }
     }
 }

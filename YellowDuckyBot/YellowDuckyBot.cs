@@ -27,19 +27,36 @@ namespace YellowDuckyBot
         public async Task OnTurn(ITurnContext context)
         {
             // TODO: MOVE OUTSIDE THE CLASS IN MEMORY MODULE
-            bool playingLycopersicon = false;
-            bool ping = false;
+            var playingLycopersicon = false;
+            var ping = false;
 
             //Prepared response to send back to user
-            String response = null;//context.Activity.Text;
+            string response = null;//context.Activity.Text;
 
             // This bot is only handling Messages
             if (context.Activity.Type == ActivityTypes.Message)
             {
+                //Read it as lower case - will be better
+                var contextQuestion = context.Activity.Text.ToLower();
+                
                 //Old simple game of Lycopersicon
-                if (playingLycopersicon == true)
+                if (playingLycopersicon)
                 {
                     response = "Lycopersicon";
+                    // TODO change it to game of Lycopersicon
+                    /*
+                     
+                     case "let's play lycopersicon":
+                            playingLycopersicon = true;
+                            response = "Lycopersicon";
+                            break;
+
+                        case "lycopersicon":
+                            playingLycopersicon = false;
+                            response = "Ha ha, you lost.";
+                            break;
+ 
+                     */
                 }
                 else
                 {
@@ -58,10 +75,25 @@ namespace YellowDuckyBot
                     state.TurnCount++;
 
                     //User has sent/asked
-                    Console.WriteLine($"User sent: {context.Activity.Text}");
+                    //Console.WriteLine($"User sent: {context.Activity.Text}");
+                    
+                    //Check for add retort - from original, not lower case
+                    if (context.Activity.Text.ToLower().StartsWith("simonsays"))
+                    {
+                        string result = AddRetort(context.Activity.Text);
+                        if (result.StartsWith("Couldn't"))
+                        {
+                            response = "[ERROR] " + result;
+                        } else
+                        {
+                            response = result;
+                            await context.SendActivity(response);
+                            return;
+                        }
+                    }
 
                     //
-                    switch (context.Activity.Text.ToLower())
+                    switch (contextQuestion)
                     {
                         case "hello":
                             response = "Hello to You!";
@@ -73,16 +105,6 @@ namespace YellowDuckyBot
                             response = $"{mind.CountRetorts()} Retorts in my mind.";
                             break;
 
-                        case "let's play lycopersicon":
-                            playingLycopersicon = true;
-                            response = "Lycopersicon";
-                            break;
-
-                        case "lycopersicon":
-                            playingLycopersicon = false;
-                            response = "Ha ha, you lost.";
-                            break;
-
                         case "ping":
                             ping = true;
                             break;
@@ -90,18 +112,18 @@ namespace YellowDuckyBot
                         case "roll d20":
                             Random random = new Random();
                             var lastRoll = random.Next(1, 20);
-                            //this.count++;
-                            if (lastRoll == 1)
+                            switch (lastRoll)
                             {
-                                response = $"You rolled {lastRoll}. Critical Failure!";
-                            }
-                            else if (lastRoll == 20)
-                            {
-                                response = $"You rolled {lastRoll}. Critical Success!";
-                            }
-                            else
-                            {
-                                response = $"You rolled {lastRoll}.";
+                                //this.count++;
+                                case 1:
+                                    response = $"You rolled {lastRoll}. Critical Failure!";
+                                    break;
+                                case 20:
+                                    response = $"You rolled {lastRoll}. Critical Success!";
+                                    break;
+                                default:
+                                    response = $"You rolled {lastRoll}.";
+                                    break;
                             }
                             break;
 
@@ -157,7 +179,7 @@ namespace YellowDuckyBot
             }
 
             //if pinged
-            if (ping == true)
+            if (ping)
             {
                 //Add responses in parts with delay in between
                 response = "Ping..";
@@ -175,6 +197,43 @@ namespace YellowDuckyBot
             {
                 await context.SendActivity(response); //Turn {state.TurnCount}: 
             }
+        }
+
+        /// <summary>
+        /// Calls the mind to add new retort to file.
+        /// </summary>
+        /// <param name="line">line to split and analyze</param>
+        /// <returns>Added.. means that it worked, errors start with "Couldn't"</returns>
+        private string AddRetort(string line)
+        {
+            if (string.IsNullOrEmpty(line))
+            {
+                return "Couldn't add retort from empty line.";
+            }
+
+            var response = "";
+            //Check for add retort - from original, not lower case
+            if (line.ToLower().StartsWith("simonsays addretort "))
+            {
+                var split = line.Split(";");//
+                //check size of 3 - simonsays addretort; question; answer
+                // TODO uncomment it, if ti splits
+                if (split.Length > 2)
+                {
+                    var added = mind.AddRetort(split[1], split[2]);
+                    response = added
+                        ? $"Added retort, ask for it with {split[1]}"
+                        : $"Couldn't add retort with question {split[1]}";
+                }
+                else
+                {
+                    response =
+                        "Couldn't add retort, because line is too short and doesn't follow pattern\n" +
+                        "simonsays addretort; question; answer";
+                }
+            }
+            //Returns a response, errors start with "Couldn't"
+            return response;
         }
     }
 }
