@@ -20,15 +20,18 @@ namespace UnitTests.Backend
             Assert.NotEqual(mind.CountRetorts(), 0);
         }
 
-        [Fact]
-        public void FindsAnswerTest()
+        [Theory]
+        [InlineData("quit", "Do I look like a Unix console?")]
+        [InlineData("exit", "Do I look like a Shell console?")]
+        [InlineData("what is sense of life?", "42. Read an Adam's book..")]
+        public void FindsAnswerTest(string question, string expectedAnswer)
         {
             // Align
             Mind mind = Mind.Instance;
             // Act
-            String answer = mind.Respond("quit");
+            String answer = mind.Respond(question);
             // Assert
-            Assert.Equal(answer, "Do I look like a Unix console?");
+            Assert.Equal(answer, expectedAnswer);
         }
 
         [Fact]
