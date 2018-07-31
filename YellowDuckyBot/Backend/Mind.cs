@@ -90,17 +90,6 @@ namespace YellowDuckyBot.Backend
         private void FindMaxRetortsId()
         {
             _retortsMaxId = _retorts.Select(t => t.Id).OrderByDescending(t => t).FirstOrDefault() + 1;
-            
-            /*if (_retorts != null && _retorts.Count > 0)
-            {
-                foreach (var retort in _retorts)
-                {
-                    if (_retortsMaxId < retort.Id)
-                    {
-                        _retortsMaxId = retort.Id;
-                    }   
-                }
-            }*/
         }
 
         /// <summary>
