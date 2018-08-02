@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using YellowDuckyBot.Backend.DataSources;
 using YellowDuckyBot.Backend.Model;
 
 namespace YellowDuckyBot.Backend
@@ -40,6 +41,16 @@ namespace YellowDuckyBot.Backend
         private static readonly object Padlock = new object();
 
         /// <summary>
+        /// Serves as handle to kept base of facts
+        /// </summary>
+        private FactsBase _facts;
+
+        public FactsBase Facts
+        {
+            get => _facts; 
+        }
+
+        /// <summary>
         /// Creates new instance of Mind.
         /// </summary>
         private Mind()
@@ -49,7 +60,13 @@ namespace YellowDuckyBot.Backend
             {
                 LoadRetorts();
             }
-        }
+
+            //
+            if (_facts == null)
+            {
+                _facts = new FactsBase();
+            }
+    }
 
         /// <summary>
         /// Returns handle to existing instance with prior constructing it, if lacks one.
@@ -108,7 +125,7 @@ namespace YellowDuckyBot.Backend
 
             var added = new Retort {Id = _retortsMaxId + 1, Question = question, Answer = answer};
 
-            // TODO Make a local copy of file faat retorts 
+            // TODO Make a local copy of file fast retorts 
 
             bool endFlag;
             // Opens file of retorts for edit and add it at the end

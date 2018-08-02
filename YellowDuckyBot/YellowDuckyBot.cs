@@ -74,21 +74,87 @@ namespace YellowDuckyBot
                     // Bump the turn count. 
                     state.TurnCount++;
 
-                    //User has sent/asked
+                    // User has sent/asked
                     //Console.WriteLine($"User sent: {context.Activity.Text}");
                     
-                    //Check for add retort - from original, not lower case
-                    if (context.Activity.Text.ToLower().StartsWith("simonsays"))
+                    // Check for add retort - from original, not lower case
+                    if (contextQuestion.StartsWith("simonsays"))
                     {
-                        string result = AddRetort(context.Activity.Text);
+                        var result = AddRetort(context.Activity.Text);
                         if (result.StartsWith("Couldn't"))
                         {
                             response = "[ERROR] " + result;
                         } else
                         {
                             response = result;
-                            await context.SendActivity(response);
-                            return;
+                            //await context.SendActivity(response);
+                            //return;
+                        }
+                        await context.SendActivity(response);
+                        return;
+                    }
+                    
+                    //Facts
+                    if (contextQuestion.Contains("fact"))
+                    {
+                        if (contextQuestion.StartsWith("addfact"))
+                        {
+                            var daFact = contextQuestion.Split(" ");
+                            if (daFact.Length > 2)
+                            {
+                                // Omit first one as it is a command
+                                var factName = daFact[1];
+                                var factValue = daFact[2];
+                                //TODO Add processing and concatenation, if fact is longer, than just one word.
+                                var result = mind.Facts.Add(factName, factValue);
+                                response = result
+                                    ? $"Fact {factName} was added."
+                                    : $"Fact {factName} couldn't be added.";
+                                await context.SendActivity(response);
+                                return;
+                            }
+                        }
+                        else if (contextQuestion.StartsWith("readfact"))
+                        {
+                            var daFact = contextQuestion.Split(" ");
+                            if (daFact.Length == 2)
+                            {
+                                // Omit first one as it is a command
+                                var factName = daFact[1];
+                                var result = mind.Facts.Read(factName);
+                                response = result != null
+                                    ? $"Fact {factName} is {result}."
+                                    : $"Fact {factName} doesn't exist.";
+                                await context.SendActivity(response);
+                                return;
+                            }
+                        }
+                        else if (contextQuestion.StartsWith("forgetfact"))
+                        {
+                            var daFact = contextQuestion.Split(" ");
+                            if (daFact.Length == 2)
+                            {
+                                // Omit first one as it is a command
+                                var factName = daFact[1];
+                                var result = mind.Facts.Remove(factName);
+                                response = result
+                                    ? $"Fact {factName} was forgotten."
+                                    : $"Fact {factName} doesn't exist.";
+                                await context.SendActivity(response);
+                                return;
+                            }
+                        } 
+                        else if (contextQuestion.StartsWith("countfact"))
+                        {
+                            var daFact = contextQuestion.Split(" ");
+                            if (daFact.Length == 1)
+                            {
+                                // Omit first one as it is a command
+                                var count = mind.Facts.Count();
+                                response = $"Facts base contains {count} facts.";
+                                await context.SendActivity(response);
+                                return;
+                            }
                         }
                     }
 
@@ -110,8 +176,7 @@ namespace YellowDuckyBot
                             break;
 
                         case "roll d20":
-                            Random random = new Random();
-                            var lastRoll = random.Next(1, 20);
+                            var lastRoll = new Random().Next(1, 20);
                             switch (lastRoll)
                             {
                                 //this.count++;
@@ -128,8 +193,7 @@ namespace YellowDuckyBot
                             break;
 
                         case "where are you?":
-                            string path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                            response = path;
+                            response = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                             break;
 
                         /*case "what do you see?":

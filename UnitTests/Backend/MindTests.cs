@@ -17,7 +17,7 @@ namespace UnitTests.Backend
             // Act
             //
             // Assert
-            Assert.NotEqual(mind.CountRetorts(), 0);
+            Assert.NotEqual(0, mind.CountRetorts());
         }
 
         [Theory]
@@ -67,7 +67,7 @@ namespace UnitTests.Backend
             // Act
             var actual = mind.CountRetorts();
             // Assert
-            Assert.NotEqual(actual, 0);
+            Assert.NotEqual(0, actual);
         }
         
         [Fact]
@@ -78,7 +78,7 @@ namespace UnitTests.Backend
             // Act
             var actual = mind.CountRetortsMaxId();
             // Assert
-            Assert.NotEqual(actual, 0);
+            Assert.NotEqual(0, actual);
         }
     }
 }
