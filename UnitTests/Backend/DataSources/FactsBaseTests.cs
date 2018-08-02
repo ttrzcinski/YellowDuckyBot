@@ -39,10 +39,22 @@ namespace UnitTests.Backend.DataSources
         [Theory]
         [InlineData(null, null)]
         [InlineData(null, "")]
+        [InlineData(null, " ")]
+        [InlineData(null, "   ")]
         [InlineData("", null)]
+        [InlineData("", "")]
+        [InlineData("", " ")]
+        [InlineData("", "   ")]
+        [InlineData(" ", null)]
+        [InlineData(" ", "")]
+        [InlineData(" ", " ")]
+        [InlineData(" ", "   ")]
+        [InlineData("   ", null)]
+        [InlineData("   ", "")]
+        [InlineData("   ", " ")]
+        [InlineData("   ", "   ")]
         public void AddWrongTest(string key, string value)
         {
-            //TODO Maybe add also white spaces
             // Align
             var facts = new FactsBase();
             // Act
@@ -146,6 +158,42 @@ namespace UnitTests.Backend.DataSources
             Assert.NotEqual(countAfterRead, countAfterRemoval);
             Assert.Equal(countBeforeAdd, countAfterRemoval);
             Assert.Equal(countAfterAdd, countAfterRead);
+        }
+        
+        [Fact]
+        public void ExistsTest()
+        {
+            // Align
+            var facts = new FactsBase();
+            var today = DateTime.Today;
+            // Act
+            var resultOfAdd = facts.Add(today.DayOfYear.ToString(), today.ToString());
+            var actual = facts.Exists(today.DayOfYear.ToString(), today.ToString());
+            
+            // Assert
+            Assert.True(actual);
+        }
+        
+        [Theory]
+        [InlineData(null, null)]
+        [InlineData(null, "")]
+        [InlineData(null, " ")]
+        [InlineData(null, "   ")]
+        // TODO Add missing cases
+        [InlineData("NonExistingFact", null)]
+        [InlineData("NonExistingFact", " ")]
+        [InlineData("NonExistingFact", "   ")]
+        [InlineData("NonExistingFact", "itsvalue")]
+        public void ExistsWrongTest(string key, string value)
+        {
+            // Align
+            var facts = new FactsBase();
+            // Act
+            var resultOfAdd = facts.Add("test_key_1", "test_value_1");
+            var actual = facts.Exists(key, value);
+            
+            // Assert
+            Assert.False(actual);
         }
         
         [Fact]

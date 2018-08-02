@@ -28,7 +28,6 @@ namespace YellowDuckyBot
         public async Task OnTurn(ITurnContext context)
         {
             // TODO: MOVE OUTSIDE THE CLASS IN MEMORY MODULE
-            var ping = false;
 
             //Prepared response to send back to user
             string response = null;//context.Activity.Text;
@@ -162,13 +161,15 @@ namespace YellowDuckyBot
                             break;
 
                         case "ping":
-                            ping = true;
+                            mind.Facts.Add("ping", "true");
                             break;
                         
                         // TODO change it to game of Lycopersicon
                         case "let's play lycopersicon":
                             var playLycopersiconResult = mind.Facts.Add("playingLycopersicon","true");
-                            response = playLycopersiconResult ? "Ok.. Lycopersicon" : "Hmm.. something is wrong wit that game.";
+                            response = playLycopersiconResult ? 
+                                "Ok.. Lycopersicon" : 
+                                "Hmm.. something is wrong wit that game.";
                             break;
 
                         case "lycopersicon":
@@ -192,7 +193,9 @@ namespace YellowDuckyBot
                             else
                             {
                                 playLycopersiconResult = mind.Facts.Add("playingLycopersicon","true");
-                                response = playLycopersiconResult ? "Ok.. Lycopersicon" : "Hmm.. something is wrong wit that game.";
+                                response = playLycopersiconResult ? 
+                                    "Ok.. Lycopersicon" : 
+                                    "Hmm.. something is wrong wit that game.";
                             }
                             break;
                         
@@ -227,6 +230,7 @@ namespace YellowDuckyBot
                             break;
 
                         default:
+                            // TODO log down all given not recognized phrases in order to analyze them in the future and add new phrases
                             response = "I didn't get this one. Can You repeat in simpler words.";
                             break;
                     }
@@ -257,11 +261,11 @@ namespace YellowDuckyBot
             }
             else if (context.Activity.Type == ActivityTypes.Ping)
             {
-                ping = true;
+                mind.Facts.Add("ping", "true");
             }
 
             //if pinged
-            if (ping)
+            if (mind.Facts.Read("ping").Equals("true"))
             {
                 //Add responses in parts with delay in between
                 response = "Ping..";
@@ -271,13 +275,12 @@ namespace YellowDuckyBot
                 await context.SendActivity(response);
                 await Task.Delay(1500);//wait 2 seconds
                 response = "I mean On.";
-                //await context.SendActivity(response);
             }
 
             //Send response to user
             if (response != null)
             {
-                await context.SendActivity(response); //Turn {state.TurnCount}: 
+                await context.SendActivity(response); 
             }
         }
 

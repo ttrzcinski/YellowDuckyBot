@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace YellowDuckyBot.Backend.DataSources
 {
@@ -18,9 +19,9 @@ namespace YellowDuckyBot.Backend.DataSources
         public FactsBase()
         {
             // Assure presence of facts base.
-            if (this.facts == null)
+            if (facts == null)
             {
-                this.facts = new SortedDictionary<string, string>();
+                facts = new SortedDictionary<string, string>();
             }
         }
 
@@ -33,7 +34,7 @@ namespace YellowDuckyBot.Backend.DataSources
         public bool Add(string key, string value)
         {
             // If key is empty, there is no point in search
-            if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(value)) return false;
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(value)) return false;
             // If facts base contains a key
             if (facts.ContainsKey(key))
             {
@@ -56,6 +57,17 @@ namespace YellowDuckyBot.Backend.DataSources
         public string Read(string key)
         {
             return !string.IsNullOrEmpty(key) && facts.ContainsKey(key) ? facts[key] : null;
+        }
+
+        /// <summary>
+        /// Checks, if given key with value exists as a fact.
+        /// </summary>
+        /// <param name="key">given name of fact</param>
+        /// <param name="value">given value</param>
+        /// <returns>true means exists, false otherwise</returns>
+        public bool Exists(string key, string value)
+        {
+            return facts.ContainsKey(key) && facts[key].Equals(value);
         }
 
         /// <summary>
