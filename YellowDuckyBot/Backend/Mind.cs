@@ -153,23 +153,20 @@ namespace YellowDuckyBot.Backend
                 endFlag = false;
                 // Opens file of retorts for edit and add it at the end
                 //using (var writer = new StreamWriter(RetortsFullPath))
+                // TODO Change it to real path
                 using (var file = File.CreateText(RetortsFullPath_2))
                 {
-                    // TODO FIX FORMAT OF SAVING - keep the JSON format
                     _retorts.Add(added);
-                    var serializer = new JsonSerializer();
-                    serializer.Serialize(file, _retorts);
-                    
-                    /*writer.Write(_retorts);
-                    writer.Flush();*/
+                    var json = JsonConvert.SerializeObject(_retorts, Formatting.Indented);
+                    file.Write(json);
                     endFlag = true;
                     _retortsMaxId++;
                 }
             }
-            else
-            {
-                //response = "Couldn't make a backup.";
-            }
+            //else
+            //{
+            //    //response = "Couldn't make a backup.";
+            //}
 
             return endFlag;
         }
