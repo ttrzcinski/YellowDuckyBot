@@ -97,7 +97,7 @@ namespace YellowDuckyBot.Backend
                 _retorts = items;
                 
                 //Refresh _retortsMaxId
-                this.FindMaxRetortsId();
+                FindMaxRetortsId();
             }
         }
 
@@ -107,6 +107,24 @@ namespace YellowDuckyBot.Backend
         private void FindMaxRetortsId()
         {
             _retortsMaxId = _retorts.Select(t => t.Id).OrderByDescending(t => t).FirstOrDefault() + 1;
+        }
+
+        /// <summary>
+        /// Backups retorts file in order not to loose all those retorts.
+        /// </summary>
+        /// <returns></returns>
+        public bool BackupRetorts()
+        {
+            var backupPath = RetortsFullPath.Replace(".json", "_bckp.json");
+            bool endFlag;
+            using (var writer = new StreamWriter(backupPath))
+            {
+                writer.Write(_retorts);
+                writer.Flush();
+                endFlag = true;
+                _retortsMaxId++;
+            }
+            return endFlag;
         }
 
         /// <summary>
@@ -125,7 +143,8 @@ namespace YellowDuckyBot.Backend
 
             var added = new Retort {Id = _retortsMaxId + 1, Question = question, Answer = answer};
 
-            // TODO Make a local copy of file fast retorts 
+            // Backup retorts in order not to do something funky
+            BackupRetorts();
 
             bool endFlag;
             // Opens file of retorts for edit and add it at the end
@@ -137,8 +156,6 @@ namespace YellowDuckyBot.Backend
                 endFlag = true;
                 _retortsMaxId++;
             }
-
-            // TODO Add retort to retorts file
 
             return endFlag;
         }
@@ -157,6 +174,8 @@ namespace YellowDuckyBot.Backend
             }
             //
             string response = null;
+            // TODO covert it to lambda expresison
+            //response = _retorts.Find(item => item.Question.ToLower().Equals(question)).Answer;
             foreach (var retort in _retorts)
             {
                 if (retort.Question.ToLower().Equals(question))

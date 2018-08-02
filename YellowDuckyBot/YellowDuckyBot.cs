@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Bot;
@@ -27,7 +28,6 @@ namespace YellowDuckyBot
         public async Task OnTurn(ITurnContext context)
         {
             // TODO: MOVE OUTSIDE THE CLASS IN MEMORY MODULE
-            var playingLycopersicon = false;
             var ping = false;
 
             //Prepared response to send back to user
@@ -40,23 +40,12 @@ namespace YellowDuckyBot
                 var contextQuestion = context.Activity.Text.ToLower();
                 
                 //Old simple game of Lycopersicon
-                if (playingLycopersicon)
+                var playingLycopersiconResult = mind.Facts.Read("playingLycopersicon");
+                if (playingLycopersiconResult!= null && playingLycopersiconResult.Equals("true") && !contextQuestion.StartsWith("lycopersicon"))
                 {
                     response = "Lycopersicon";
-                    // TODO change it to game of Lycopersicon
-                    /*
-                     
-                     case "let's play lycopersicon":
-                            playingLycopersicon = true;
-                            response = "Lycopersicon";
-                            break;
-
-                        case "lycopersicon":
-                            playingLycopersicon = false;
-                            response = "Ha ha, you lost.";
-                            break;
- 
-                     */
+                    await context.SendActivity(response);
+                    return;
                 }
                 else
                 {
@@ -78,6 +67,7 @@ namespace YellowDuckyBot
                     //Console.WriteLine($"User sent: {context.Activity.Text}");
                     
                     // Check for add retort - from original, not lower case
+                    // TODO ADD AMDMIN MODE
                     if (contextQuestion.StartsWith("simonsays"))
                     {
                         var result = AddRetort(context.Activity.Text);
@@ -174,7 +164,38 @@ namespace YellowDuckyBot
                         case "ping":
                             ping = true;
                             break;
+                        
+                        // TODO change it to game of Lycopersicon
+                        case "let's play lycopersicon":
+                            var playLycopersiconResult = mind.Facts.Add("playingLycopersicon","true");
+                            response = playLycopersiconResult ? "Ok.. Lycopersicon" : "Hmm.. something is wrong wit that game.";
+                            break;
 
+                        case "lycopersicon":
+                            playingLycopersiconResult = mind.Facts.Read("playingLycopersicon");
+                            if (playingLycopersiconResult != null && playingLycopersiconResult.Equals("true"))
+                            {
+                                var stopPlayLycopersiconResult = mind.Facts.Remove("playingLycopersicon");
+                                if (stopPlayLycopersiconResult)
+                                {
+                                    // TODO CANNOT STOP PLAYING..
+                                    var playedLycopersiconResult = mind.Facts.Add("playedLycopersicon", "true");
+                                    response = playedLycopersiconResult ? 
+                                        "Ha ha, you lost. I'll remember that." 
+                                        : "Ha ha, you lost... Wait, what just happened?";
+                                }
+                                else
+                                {
+                                    response = "I cannot stop.. Lycopersicon.";
+                                }
+                            }
+                            else
+                            {
+                                playLycopersiconResult = mind.Facts.Add("playingLycopersicon","true");
+                                response = playLycopersiconResult ? "Ok.. Lycopersicon" : "Hmm.. something is wrong wit that game.";
+                            }
+                            break;
+                        
                         case "roll d20":
                             var lastRoll = new Random().Next(1, 20);
                             switch (lastRoll)
@@ -196,17 +217,14 @@ namespace YellowDuckyBot
                             response = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                             break;
 
-                        /*case "what do you see?":
+                        case "what do you see?":
                             //Environment.CurrentDirectory
-                            string path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"wwwroot\");
-                            string[] files = Directory.GetFiles(path);
+                            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"wwwroot\");
+                            var files = Directory.GetFiles(path);
                             response = $"Well, I see {files.Length} files around me.";
-                            foreach (string filename in files)
-                            {
-                                response += $"\n {filename}";
-                            }
+                            response = files.Aggregate(response, (current, filename) => current + $"\n {filename}");
                             //string[] files = File.ReadAllLines(path);
-                            break;*/
+                            break;
 
                         default:
                             response = "I didn't get this one. Can You repeat in simpler words.";
