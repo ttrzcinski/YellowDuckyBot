@@ -2,10 +2,19 @@ using System.Collections.Generic;
 
 namespace YellowDuckyBot.Backend.DataSources
 {
+    /// <summary>
+    /// Works as a dictionary of facts, where a key is just one word.
+    /// </summary>
     public class FactsBase
     {
+        /// <summary>
+        /// Keeps facts as dictionary entries.
+        /// </summary>
         private SortedDictionary<string, string> facts;
 
+        /// <summary>
+        /// Creates new Fact Base instance.
+        /// </summary>
         public FactsBase()
         {
             // Assure presence of facts base.

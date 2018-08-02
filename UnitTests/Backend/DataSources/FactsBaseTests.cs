@@ -52,6 +52,20 @@ namespace UnitTests.Backend.DataSources
         }
         
         [Fact]
+        public void AddKeepsCasesTest()
+        {
+            // Align
+            var facts = new FactsBase();
+            var today = DateTime.Today;
+            var coolCaps = "SuperDuperYellowDuckyBot";
+            // Act
+            var resultOfAdd = facts.Add(today.DayOfYear.ToString(), coolCaps);           
+            var resultOfRead = facts.Read(today.DayOfYear.ToString());
+            // Assert
+            Assert.Equal(coolCaps, resultOfRead);
+        }
+        
+        [Fact]
         public void ReadValueTest()
         {
             // Align
@@ -114,6 +128,27 @@ namespace UnitTests.Backend.DataSources
         }
         
         [Fact]
+        public void CountsTest()
+        {
+            // Align
+            var facts = new FactsBase();
+            var today = DateTime.Today;
+            // Act
+            var countBeforeAdd = facts.Count();
+            var resultOfAdd = facts.Add(today.DayOfWeek.ToString(), today.ToString());
+            var countAfterAdd = facts.Count();
+            var resultOfRead = facts.Read(today.DayOfWeek.ToString());
+            var countAfterRead = facts.Count();
+            var resultOfRemove = facts.Remove(today.DayOfWeek.ToString());
+            var countAfterRemoval = facts.Count();
+            // Assert
+            Assert.NotEqual(countBeforeAdd, countAfterAdd);
+            Assert.NotEqual(countAfterRead, countAfterRemoval);
+            Assert.Equal(countBeforeAdd, countAfterRemoval);
+            Assert.Equal(countAfterAdd, countAfterRead);
+        }
+        
+        [Fact]
         public void AddAndOverrideTest()
         {
             // Align
@@ -147,19 +182,5 @@ namespace UnitTests.Backend.DataSources
             var resultOfRemove = facts.Remove(today.DayOfWeek.ToString());
             Assert.True(resultOfRemove);
         }
-
-        /*[Theory]
-        [InlineData("quit", "Do I look like a Unix console?")]
-        [InlineData("exit", "Do I look like a Shell console?")]
-        [InlineData("what is sense of life?", "42. Read an Adam's book..")]
-        public void FindsAnswerTest(string question, string expectedAnswer)
-        {
-            // Align
-            var mind = Mind.Instance;
-            // Act
-            var answer = mind.Respond(question);
-            // Assert
-            Assert.Equal(answer, expectedAnswer);
-        }*/
     }
 }

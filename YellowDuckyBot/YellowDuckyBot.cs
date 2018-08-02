@@ -61,7 +61,7 @@ namespace YellowDuckyBot
                 else
                 {
                     //Load retorts from JSON file
-                    response = mind.Respond(context.Activity.Text.ToLower());
+                    response = mind.Respond(contextQuestion);
                     if (response != null)
                     {
                         await context.SendActivity(response);
@@ -99,11 +99,11 @@ namespace YellowDuckyBot
                     {
                         if (contextQuestion.StartsWith("addfact"))
                         {
-                            var daFact = contextQuestion.Split(" ");
+                            var daFact = context.Activity.Text.Split(" ");
                             if (daFact.Length > 2)
                             {
                                 // Omit first one as it is a command
-                                var factName = daFact[1];
+                                var factName = daFact[1].ToLower();
                                 var factValue = daFact[2];
                                 //TODO Add processing and concatenation, if fact is longer, than just one word.
                                 var result = mind.Facts.Add(factName, factValue);
