@@ -28,6 +28,7 @@ namespace YellowDuckyBot
         public async Task OnTurn(ITurnContext context)
         {
             // TODO: MOVE OUTSIDE THE CLASS IN MEMORY MODULE
+            var ping = false;
 
             //Prepared response to send back to user
             string response = null;//context.Activity.Text;
@@ -161,15 +162,13 @@ namespace YellowDuckyBot
                             break;
 
                         case "ping":
-                            mind.Facts.Add("ping", "true");
+                            ping = true;
                             break;
                         
                         // TODO change it to game of Lycopersicon
                         case "let's play lycopersicon":
                             var playLycopersiconResult = mind.Facts.Add("playingLycopersicon","true");
-                            response = playLycopersiconResult ? 
-                                "Ok.. Lycopersicon" : 
-                                "Hmm.. something is wrong wit that game.";
+                            response = playLycopersiconResult ? "Ok.. Lycopersicon" : "Hmm.. something is wrong wit that game.";
                             break;
 
                         case "lycopersicon":
@@ -193,9 +192,7 @@ namespace YellowDuckyBot
                             else
                             {
                                 playLycopersiconResult = mind.Facts.Add("playingLycopersicon","true");
-                                response = playLycopersiconResult ? 
-                                    "Ok.. Lycopersicon" : 
-                                    "Hmm.. something is wrong wit that game.";
+                                response = playLycopersiconResult ? "Ok.. Lycopersicon" : "Hmm.. something is wrong wit that game.";
                             }
                             break;
                         
@@ -261,11 +258,11 @@ namespace YellowDuckyBot
             }
             else if (context.Activity.Type == ActivityTypes.Ping)
             {
-                mind.Facts.Add("ping", "true");
+                ping = true;
             }
 
             //if pinged
-            if (mind.Facts.Read("ping").Equals("true"))
+            if (ping)
             {
                 //Add responses in parts with delay in between
                 response = "Ping..";
