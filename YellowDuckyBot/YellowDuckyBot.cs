@@ -41,7 +41,9 @@ namespace YellowDuckyBot
                 
                 //Old simple game of Lycopersicon
                 var playingLycopersiconResult = mind.Facts.Read("playingLycopersicon");
-                if (playingLycopersiconResult!= null && playingLycopersiconResult.Equals("true") && !contextQuestion.StartsWith("lycopersicon"))
+                if (playingLycopersiconResult!= null 
+                    && playingLycopersiconResult.Equals("true")                                  
+                    && !contextQuestion.StartsWith("lycopersicon"))
                 {
                     response = "Lycopersicon";
                     await context.SendActivity(response);
@@ -62,29 +64,53 @@ namespace YellowDuckyBot
 
                     // Bump the turn count. 
                     state.TurnCount++;
-
-                    // User has sent/asked
-                    //Console.WriteLine($"User sent: {context.Activity.Text}");
                     
                     // Check for add retort - from original, not lower case
-                    // TODO ADD AMDMIN MODE
+                    // TODO ADD ADMIN MODE
                     if (contextQuestion.StartsWith("simonsays"))
                     {
-                        var result = AddRetort(context.Activity.Text);
-                        if (result.StartsWith("Couldn't"))
+                        if (contextQuestion.StartsWith("simonsays addretort;"))
                         {
-                            response = "[ERROR] " + result;
-                        } else
-                        {
-                            response = result;
-                            //await context.SendActivity(response);
-                            //return;
+                            var split = context.Activity.Text.Split(";");
+                            if (split.Length == 3)
+                            {
+                                if (split[1].Trim().Length > 0 && split[2].Trim().Length > 0)
+                                {
+                                    //TODO CHECK, IF RETORT ALREADY EXISTS
+                                    bool result = mind.AddRetort(split[1].Trim(), split[2].Trim());
+                                    response = result
+                                        ? $"Added new retort {split[1]}."
+                                        : $"Couldn't add retort {split[1]}.";
+                                }
+                                else
+                                {
+                                    response = "One of parameters was empty.";
+                                }
+
+                                /*foreach (var word in split)
+                                {
+                                    //var result = AddRetort(context.Activity.Text);
+                                    response = word;
+                                    //response = result.StartsWith("Couldn't") ? "[ERROR] " + result : result;
+                                    await context.SendActivity(response);
+                                }*/
+                            }
+                            else
+                            {
+                                response = "It should follow pattern: simonsays addretort;question;answer";
+                            }
+
+                            await context.SendActivity(response);
+                            return;
                         }
-                        await context.SendActivity(response);
-                        return;
+                        else if (contextQuestion.StartsWith("simonsays forgetretort;"))
+                        {
+                            
+                        }
                     }
                     
                     //Facts
+                    // TODO Move this to mind
                     if (contextQuestion.Contains("fact"))
                     {
                         if (contextQuestion.StartsWith("addfact"))
@@ -156,9 +182,9 @@ namespace YellowDuckyBot
                             break;
 
                         // TODO Add some admin-mode with prior authorization
-                        // TODO Add console entry level of extending retords
+                        // TODO Add console entry level of extending retorts
                         case "how many retorts?":
-                            response = $"{mind.CountRetorts()} Retorts in my mind.";
+                            response = $"I've {mind.CountRetorts()} retorts in my mind.";
                             break;
 
                         case "ping":
@@ -279,43 +305,6 @@ namespace YellowDuckyBot
             {
                 await context.SendActivity(response); 
             }
-        }
-
-        /// <summary>
-        /// Calls the mind to add new retort to file.
-        /// </summary>
-        /// <param name="line">line to split and analyze</param>
-        /// <returns>Added.. means that it worked, errors start with "Couldn't"</returns>
-        private string AddRetort(string line)
-        {
-            if (string.IsNullOrEmpty(line))
-            {
-                return "Couldn't add retort from empty line.";
-            }
-
-            var response = "";
-            //Check for add retort - from original, not lower case
-            if (line.ToLower().StartsWith("simonsays addretort "))
-            {
-                var split = line.Split(";");//
-                //check size of 3 - simonsays addretort; question; answer
-                // TODO uncomment it, if ti splits
-                if (split.Length > 2)
-                {
-                    var added = mind.AddRetort(split[1], split[2]);
-                    response = added
-                        ? $"Added retort, ask for it with {split[1]}"
-                        : $"Couldn't add retort with question {split[1]}";
-                }
-                else
-                {
-                    response =
-                        "Couldn't add retort, because line is too short and doesn't follow pattern\n" +
-                        "simonsays addretort; question; answer";
-                }
-            }
-            //Returns a response, errors start with "Couldn't"
-            return response;
         }
     }
 }

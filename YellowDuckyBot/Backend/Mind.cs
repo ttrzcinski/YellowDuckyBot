@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Bot.Schema;
 using YellowDuckyBot.Backend.DataSources;
 using YellowDuckyBot.Backend.Model;
 
@@ -19,6 +20,7 @@ namespace YellowDuckyBot.Backend
         /// Hardcoded path to fast retorts file.
         /// </summary>
         private const string RetortsFullPath = "C:\\vsproj\\YellowDuckyBot\\YellowDuckyBot\\YellowDuckyBot\\Backend\\Repository\\fast_retorts.json";
+        private const string RetortsFullPath_2 = "C:\\vsproj\\YellowDuckyBot\\YellowDuckyBot\\YellowDuckyBot\\Backend\\Repository\\fast_retorts_2.json";
         
         /// <summary>
         /// Retorts as quick responses to questions.
@@ -144,17 +146,29 @@ namespace YellowDuckyBot.Backend
             var added = new Retort {Id = _retortsMaxId + 1, Question = question, Answer = answer};
 
             // Backup retorts in order not to do something funky
-            BackupRetorts();
-
-            bool endFlag;
-            // Opens file of retorts for edit and add it at the end
-            using (var writer = new StreamWriter(RetortsFullPath))
+            // TODO FIX FORMAT OF SAVING
+            var endFlag = BackupRetorts();
+            if (endFlag)
             {
-                _retorts.Add(added);
-                writer.Write(_retorts);
-                writer.Flush();
-                endFlag = true;
-                _retortsMaxId++;
+                endFlag = false;
+                // Opens file of retorts for edit and add it at the end
+                //using (var writer = new StreamWriter(RetortsFullPath))
+                using (var file = File.CreateText(RetortsFullPath_2))
+                {
+                    // TODO FIX FORMAT OF SAVING - keep the JSON format
+                    _retorts.Add(added);
+                    var serializer = new JsonSerializer();
+                    serializer.Serialize(file, _retorts);
+                    
+                    /*writer.Write(_retorts);
+                    writer.Flush();*/
+                    endFlag = true;
+                    _retortsMaxId++;
+                }
+            }
+            else
+            {
+                //response = "Couldn't make a backup.";
             }
 
             return endFlag;
