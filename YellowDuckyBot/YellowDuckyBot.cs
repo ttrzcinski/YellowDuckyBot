@@ -77,7 +77,7 @@ namespace YellowDuckyBot
                                 if (split[1].Trim().Length > 0 && split[2].Trim().Length > 0)
                                 {
                                     //TODO CHECK, IF RETORT ALREADY EXISTS
-                                    bool result = mind.AddRetort(split[1].Trim(), split[2].Trim());
+                                    var result = mind.AddRetort(split[1].Trim(), split[2].Trim());
                                     response = result
                                         ? $"Added new retort {split[1]}."
                                         : $"Couldn't add retort {split[1]}.";
@@ -86,14 +86,6 @@ namespace YellowDuckyBot
                                 {
                                     response = "One of parameters was empty.";
                                 }
-
-                                /*foreach (var word in split)
-                                {
-                                    //var result = AddRetort(context.Activity.Text);
-                                    response = word;
-                                    //response = result.StartsWith("Couldn't") ? "[ERROR] " + result : result;
-                                    await context.SendActivity(response);
-                                }*/
                             }
                             else
                             {
@@ -103,9 +95,16 @@ namespace YellowDuckyBot
                             await context.SendActivity(response);
                             return;
                         }
-                        else if (contextQuestion.StartsWith("simonsays forgetretort;"))
+                        else if (contextQuestion.StartsWith("simonsays SPLIT;"))
                         {
-                            
+                            var split = context.Activity.Text.Split(";");
+                            foreach (var word in split)
+                            {
+                                //var result = AddRetort(context.Activity.Text);
+                                response = word;
+                                //response = result.StartsWith("Couldn't") ? "[ERROR] " + result : result;
+                                await context.SendActivity(response);
+                            }
                         }
                     }
                     

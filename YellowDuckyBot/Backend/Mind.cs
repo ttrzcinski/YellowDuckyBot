@@ -109,7 +109,31 @@ namespace YellowDuckyBot.Backend
         /// </summary>
         private void FindMaxRetortsId()
         {
-            _retortsMaxId = _retorts.Select(t => t.Id).OrderByDescending(t => t).FirstOrDefault() + 1;
+            _retortsMaxId = _retorts.Select(t => t.Id).OrderByDescending(t => t).FirstOrDefault();
+        }
+        // TODO THE SAME as above - remove it
+        /// <summary>
+        /// Recounts top id of whole list of retorts. 
+        /// </summary>
+        public void RefreshRetortMaxId()
+        {
+            if (_retorts != null)
+            {
+                var id = -1;
+                foreach (var retort in _retorts)
+                {
+                    if (id < retort.Id)
+                    {
+                        id = retort.Id;
+                    }
+                }
+
+                _retortsMaxId = id;
+            }
+            else
+            {
+                Console.WriteLine("List of retorts is empty.");
+            }
         }
 
         private string Now()
@@ -220,9 +244,9 @@ namespace YellowDuckyBot.Backend
         /// Returns top id of all retorts.
         /// </summary>
         /// <returns>top id, if there are some retorts, on null or empty returns 0</returns>
-        public int CountRetortsMaxId()
+        public int RetortsMaxId()
         {
-            return _retorts?.Count ?? 0;
+            return _retortsMaxId;
         }
     }
 }
