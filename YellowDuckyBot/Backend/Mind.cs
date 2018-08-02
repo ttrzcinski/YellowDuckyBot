@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -111,22 +112,31 @@ namespace YellowDuckyBot.Backend
             _retortsMaxId = _retorts.Select(t => t.Id).OrderByDescending(t => t).FirstOrDefault() + 1;
         }
 
+        private string Now()
+        {
+            return DateTime.Now.ToString("yyyyMMddHHmmssffff");
+        }
+
         /// <summary>
         /// Backups retorts file in order not to loose all those retorts.
         /// </summary>
-        /// <returns></returns>
-        public bool BackupRetorts()
+        /// <returns>true means backup was created, false otherwise</returns>
+        private bool BackupRetorts()
         {
-            var backupPath = RetortsFullPath.Replace(".json", "_bckp.json");
-            bool endFlag;
-            using (var writer = new StreamWriter(backupPath))
+            //Prepare name of backup file
+            var backupPath = RetortsFullPath.Replace(".json", $"_{Now()}.json");
+            //copy current file to backup
+            File.Copy(RetortsFullPath, backupPath);
+
+            //var endFlag = File.Exists(backupPath);
+            /*using (var writer = new StreamWriter(backupPath))
             {
                 writer.Write(_retorts);
                 writer.Flush();
                 endFlag = true;
                 _retortsMaxId++;
-            }
-            return endFlag;
+            }*/
+            return File.Exists(backupPath);;
         }
 
         /// <summary>
@@ -142,31 +152,29 @@ namespace YellowDuckyBot.Backend
             {
                 return false;
             }
-
+            // TODO check id before and after
             var added = new Retort {Id = _retortsMaxId + 1, Question = question, Answer = answer};
 
             // Backup retorts in order not to do something funky
-            // TODO FIX FORMAT OF SAVING
             var endFlag = BackupRetorts();
             if (endFlag)
             {
-                endFlag = false;
+                //Clear file of retorts
+                File.WriteAllText(RetortsFullPath, string.Empty);
+                
                 // Opens file of retorts for edit and add it at the end
-                //using (var writer = new StreamWriter(RetortsFullPath))
-                // TODO Change it to real path
-                using (var file = File.CreateText(RetortsFullPath_2))
+                using (var file = File.CreateText(RetortsFullPath))
                 {
                     _retorts.Add(added);
                     var json = JsonConvert.SerializeObject(_retorts, Formatting.Indented);
                     file.Write(json);
-                    endFlag = true;
                     _retortsMaxId++;
                 }
             }
-            //else
-            //{
-            //    //response = "Couldn't make a backup.";
-            //}
+            else
+            {
+                Console.WriteLine("Couldn't make a backup of retorts.");
+            }
 
             return endFlag;
         }
