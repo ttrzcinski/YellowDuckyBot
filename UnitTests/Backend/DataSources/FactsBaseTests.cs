@@ -1,6 +1,5 @@
 using System;
 using Xunit;
-using YellowDuckyBot.Backend;
 using YellowDuckyBot.Backend.DataSources;
 
 namespace UnitTests.Backend.DataSources
@@ -87,7 +86,6 @@ namespace UnitTests.Backend.DataSources
             // Act
             var resultOfAdd = facts.Add(today.DayOfYear.ToString(), today.ToString());
             var actual = facts.Read(today.DayOfYear.ToString());
-            
             // Assert
             Assert.True(resultOfAdd);
             Assert.Equal(today.ToString(), actual);
@@ -105,7 +103,6 @@ namespace UnitTests.Backend.DataSources
             var facts = new FactsBase();
             // Act
             var actual = facts.Read(key);
-            
             // Assert
             Assert.Null(actual);
         }
@@ -139,6 +136,8 @@ namespace UnitTests.Backend.DataSources
             var resultOfRemoval = facts.Remove(today.DayOfYear.ToString());
             var countAfter = facts.Count();
             // Assert
+            Assert.True(resultOfAdd);
+            Assert.True(resultOfRemoval);
             Assert.True(countBefore > countAfter);
         }
         
@@ -154,9 +153,12 @@ namespace UnitTests.Backend.DataSources
             var countAfterAdd = facts.Count();
             var resultOfRead = facts.Read(today.DayOfWeek.ToString());
             var countAfterRead = facts.Count();
-            var resultOfRemove = facts.Remove(today.DayOfWeek.ToString());
+            var resultOfRemoval = facts.Remove(today.DayOfWeek.ToString());
             var countAfterRemoval = facts.Count();
             // Assert
+            Assert.True(resultOfAdd);
+            Assert.NotNull(resultOfRead);
+            Assert.True(resultOfRemoval);
             Assert.NotEqual(countBeforeAdd, countAfterAdd);
             Assert.NotEqual(countAfterRead, countAfterRemoval);
             Assert.Equal(countBeforeAdd, countAfterRemoval);
@@ -172,8 +174,8 @@ namespace UnitTests.Backend.DataSources
             // Act
             var resultOfAdd = facts.Add(today.DayOfYear.ToString(), today.ToString());
             var actual = facts.Exists(today.DayOfYear.ToString(), today.ToString());
-            
             // Assert
+            Assert.True(resultOfAdd);
             Assert.True(actual);
         }
         
@@ -186,7 +188,7 @@ namespace UnitTests.Backend.DataSources
         [InlineData("NonExistingFact", null)]
         [InlineData("NonExistingFact", " ")]
         [InlineData("NonExistingFact", "   ")]
-        [InlineData("NonExistingFact", "itsvalue")]
+        [InlineData("NonExistingFact", "its_a_value")]
         public void ExistsWrongTest(string key, string value)
         {
             // Align
@@ -194,7 +196,6 @@ namespace UnitTests.Backend.DataSources
             // Act
             var resultOfAdd = facts.Add("test_key_1", "test_value_1");
             var actual = facts.Exists(key, value);
-            
             // Assert
             Assert.True(resultOfAdd);
             Assert.False(actual);
@@ -211,7 +212,6 @@ namespace UnitTests.Backend.DataSources
             var oldValue = facts.Read(today.DayOfYear.ToString());
             var resultOfOverride = facts.Add(today.DayOfYear.ToString(), today.ToLongDateString());
             var laterValue = facts.Read(today.DayOfYear.ToString());
-            
             // Assert
             Assert.True(resultOfAdd);
             Assert.True(resultOfOverride);
@@ -226,12 +226,11 @@ namespace UnitTests.Backend.DataSources
             var today = DateTime.Today;
             // Act and Assert
             var resultOfAdd = facts.Add(today.DayOfWeek.ToString(), today.ToString());
-            Assert.True(resultOfAdd);
-            
             var resultOfRead = facts.Read(today.DayOfWeek.ToString());
-            Assert.NotNull(resultOfRead);
-            
             var resultOfRemove = facts.Remove(today.DayOfWeek.ToString());
+            // Assert
+            Assert.True(resultOfAdd);
+            Assert.NotNull(resultOfRead);
             Assert.True(resultOfRemove);
         }
     }

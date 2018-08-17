@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace YellowDuckyBot.Backend.Model
+﻿namespace YellowDuckyBot.Backend.Model
 {
     // Represents a single retort item from responses tree.
     /// <summary>
@@ -9,8 +7,8 @@ namespace YellowDuckyBot.Backend.Model
     internal class Retort
     {
         public int Id { get; set; }
-        public String Question { get; set; }
-        public String Answer { get; set; }
+        public string Question { get; set; }
+        public string Answer { get; set; }
 
         // Returns concatenated form of retort to list it.
         /// <summary>

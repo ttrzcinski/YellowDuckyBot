@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Microsoft.Bot.Schema;
 using YellowDuckyBot.Backend.DataSources;
 using YellowDuckyBot.Backend.Model;
 
@@ -21,7 +20,6 @@ namespace YellowDuckyBot.Backend
         /// Hardcoded path to fast retorts file.
         /// </summary>
         private const string RetortsFullPath = "C:\\vsproj\\YellowDuckyBot\\YellowDuckyBot\\YellowDuckyBot\\Backend\\Repository\\fast_retorts.json";
-        private const string RetortsFullPath_2 = "C:\\vsproj\\YellowDuckyBot\\YellowDuckyBot\\YellowDuckyBot\\Backend\\Repository\\fast_retorts_2.json";
         
         /// <summary>
         /// Retorts as quick responses to questions.
@@ -141,7 +139,7 @@ namespace YellowDuckyBot.Backend
                 endFlag = true;
                 _retortsMaxId++;
             }*/
-            return File.Exists(backupPath);;
+            return File.Exists(backupPath);
         }
 
         /// <summary>

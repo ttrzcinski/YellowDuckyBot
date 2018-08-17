@@ -5,6 +5,6 @@
     /// </summary>
     public class EchoState
     {
-        public int TurnCount { get; set; } = 0;
+        public int TurnCount { get; set; }
     }
 }
