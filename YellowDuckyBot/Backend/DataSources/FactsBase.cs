@@ -67,7 +67,7 @@ namespace YellowDuckyBot.Backend.DataSources
         /// <returns>true means exists, false otherwise</returns>
         public bool Exists(string key, string value)
         {
-            return facts.ContainsKey(key) && facts[key].Equals(value);
+            return key != null && (facts.TryGetValue(key, out var actualValue) && actualValue == value);
         }
 
         /// <summary>
