@@ -20,20 +20,20 @@ namespace YellowDuckyBot
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
+                .AddJsonFile("appsettings.json", true, true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", true)
                 .AddEnvironmentVariables();
 
             Configuration = builder.Build();
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Creates new Mind to hold knowledge and reponses
-            Mind mind = Mind.Instance;
+            // Creates new Mind to hold knowledge and responses
+            var mind = Mind.Instance;
             mind.LoadRetorts();
 
             services.AddBot<YellowDuckyBot>(options =>
@@ -42,13 +42,14 @@ namespace YellowDuckyBot
 
                 // The CatchExceptionMiddleware provides a top-level exception handler for your bot. 
                 // Any exceptions thrown by other Middleware, or by your OnTurn method, will be 
-                // caught here. To facillitate debugging, the exception is sent out, via Trace, 
+                // caught here. To facilitate debugging, the exception is sent out, via Trace, 
                 // to the emulator. Trace activities are NOT displayed to users, so in addition
                 // an "Ooops" message is sent. 
                 options.Middleware.Add(new CatchExceptionMiddleware<Exception>(async (context, exception) =>
                 {
                     await context.TraceActivity("YellowDuckyBot Exception", exception);
                     await context.SendActivity("Sorry, it looks like something went wrong!");
+                    await context.SendActivity(exception.ToString());
                 }));
 
                 // The Memory Storage used here is for local bot debugging only. When the bot

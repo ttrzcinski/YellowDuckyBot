@@ -9,7 +9,7 @@ using YellowDuckyBot.Backend.Model;
 
 namespace YellowDuckyBot.Backend
 {
-    // Represents central hub of bot's capabilities and responses.
+    // Represents central hub of bot capabilities and responses.
     /// <summary>
     /// Represents central hub of bot.
     /// </summary>
@@ -29,7 +29,7 @@ namespace YellowDuckyBot.Backend
         private List<Retort> _retorts;
 
         /// <summary>
-        /// Retort's the highest id.
+        /// The highest id of retorts.
         /// </summary>
         private int _retortsMaxId = -1;
 
@@ -48,29 +48,22 @@ namespace YellowDuckyBot.Backend
         /// </summary>
         private FactsBase _facts;
 
-        public FactsBase Facts
-        {
-            get => _facts; 
-        }
+        public FactsBase Facts => _facts;
 
         /// <summary>
         /// Creates new instance of Mind.
         /// </summary>
         private Mind()
         {
-            //Obtain retorts, if are not loaded
+            // Obtain retorts, if are not loaded
             if (_retorts == null)
             {
                 LoadRetorts();
             }
 
-            //
-            if (_facts == null)
-            {
-                _facts = new FactsBase();
-            }
-    }
-
+            AssureNN_facts();
+        }
+        
         /// <summary>
         /// Returns handle to existing instance with prior constructing it, if lacks one.
         /// </summary>
@@ -105,38 +98,26 @@ namespace YellowDuckyBot.Backend
         }
 
         /// <summary>
+        /// Assures facts base being initialized.
+        /// </summary>
+        private void AssureNN_facts()
+        {
+            // Check, if facts base is null
+            if (_facts == null)
+            {
+                _facts = new FactsBase();
+            }
+        }
+
+        /// <summary>
         /// Finds the highest id from retorts.
         /// </summary>
         private void FindMaxRetortsId()
         {
-            _retortsMaxId = _retorts.Select(t => t.Id).OrderByDescending(t => t).FirstOrDefault();
-        }
-        // TODO THE SAME as above - remove it
-        /// <summary>
-        /// Recounts top id of whole list of retorts. 
-        /// </summary>
-        public void RefreshRetortMaxId()
-        {
-            if (_retorts != null)
-            {
-                var id = -1;
-                foreach (var retort in _retorts)
-                {
-                    if (id < retort.Id)
-                    {
-                        id = retort.Id;
-                    }
-                }
-
-                _retortsMaxId = id;
-            }
-            else
-            {
-                Console.WriteLine("List of retorts is empty.");
-            }
+            if (_retorts != null) _retortsMaxId = _retorts.Select(t => t.Id).OrderByDescending(t => t).FirstOrDefault();
         }
 
-        private string Now()
+        private static string Now()
         {
             return DateTime.Now.ToString("yyyyMMddHHmmssffff");
         }
@@ -217,7 +198,7 @@ namespace YellowDuckyBot.Backend
             }
             //
             string response = null;
-            // TODO covert it to lambda expresison
+            // TODO covert it to lambda expression
             //response = _retorts.Find(item => item.Question.ToLower().Equals(question)).Answer;
             foreach (var retort in _retorts)
             {

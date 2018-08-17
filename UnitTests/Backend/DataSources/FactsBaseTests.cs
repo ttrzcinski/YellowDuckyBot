@@ -69,11 +69,12 @@ namespace UnitTests.Backend.DataSources
             // Align
             var facts = new FactsBase();
             var today = DateTime.Today;
-            var coolCaps = "SuperDuperYellowDuckyBot";
+            const string coolCaps = "SuperDuperYellowDuckyBot";
             // Act
             var resultOfAdd = facts.Add(today.DayOfYear.ToString(), coolCaps);           
             var resultOfRead = facts.Read(today.DayOfYear.ToString());
             // Assert
+            Assert.True(resultOfAdd);
             Assert.Equal(coolCaps, resultOfRead);
         }
         
@@ -88,6 +89,7 @@ namespace UnitTests.Backend.DataSources
             var actual = facts.Read(today.DayOfYear.ToString());
             
             // Assert
+            Assert.True(resultOfAdd);
             Assert.Equal(today.ToString(), actual);
         }
         
@@ -101,7 +103,6 @@ namespace UnitTests.Backend.DataSources
         {
             // Align
             var facts = new FactsBase();
-            var today = DateTime.Today;
             // Act
             var actual = facts.Read(key);
             
@@ -121,6 +122,8 @@ namespace UnitTests.Backend.DataSources
             var resultOfRemoval = facts.Remove(today.DayOfYear.ToString());
             var countAfter = facts.Count();
             // Assert
+            Assert.True(resultOfAdd);
+            Assert.True(countBefore > countAfter);
             Assert.True(resultOfRemoval);
         }
         
@@ -193,6 +196,7 @@ namespace UnitTests.Backend.DataSources
             var actual = facts.Exists(key, value);
             
             // Assert
+            Assert.True(resultOfAdd);
             Assert.False(actual);
         }
         

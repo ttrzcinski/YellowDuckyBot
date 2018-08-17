@@ -15,11 +15,11 @@ namespace YellowDuckyBot
     public class YellowDuckyBot : IBot
     {
         // Variables
-        Mind mind = Mind.Instance;
+        private Mind _mind = Mind.Instance;
         
         /// <summary>
         /// Every Conversation turn for our YellowDuckyBot will call this method. In here
-        /// the bot checks the Activty type to verify it's a message, bumps the 
+        /// the bot checks the Activity type to verify it's a message, bumps the 
         /// turn conversation 'Turn' count, and then echoes the users typing
         /// back to them. 
         /// </summary>
@@ -40,7 +40,7 @@ namespace YellowDuckyBot
                 var contextQuestion = context.Activity.Text.ToLower();
                 
                 //Old simple game of Lycopersicon
-                var playingLycopersiconResult = mind.Facts.Read("playingLycopersicon");
+                var playingLycopersiconResult = _mind.Facts.Read("playingLycopersicon");
                 if (playingLycopersiconResult!= null 
                     && playingLycopersiconResult.Equals("true")                                  
                     && !contextQuestion.StartsWith("lycopersicon"))
@@ -52,7 +52,7 @@ namespace YellowDuckyBot
                 else
                 {
                     //Load retorts from JSON file
-                    response = mind.Respond(contextQuestion);
+                    response = _mind.Respond(contextQuestion);
                     if (response != null)
                     {
                         await context.SendActivity(response);
@@ -77,7 +77,7 @@ namespace YellowDuckyBot
                                 if (split[1].Trim().Length > 0 && split[2].Trim().Length > 0)
                                 {
                                     //TODO CHECK, IF RETORT ALREADY EXISTS
-                                    var result = mind.AddRetort(split[1].Trim(), split[2].Trim());
+                                    var result = _mind.AddRetort(split[1].Trim(), split[2].Trim());
                                     response = result
                                         ? $"Added new retort {split[1]}."
                                         : $"Couldn't add retort {split[1]}.";
@@ -121,7 +121,7 @@ namespace YellowDuckyBot
                                 var factName = daFact[1].ToLower();
                                 var factValue = daFact[2];
                                 //TODO Add processing and concatenation, if fact is longer, than just one word.
-                                var result = mind.Facts.Add(factName, factValue);
+                                var result = _mind.Facts.Add(factName, factValue);
                                 response = result
                                     ? $"Fact {factName} was added."
                                     : $"Fact {factName} couldn't be added.";
@@ -136,7 +136,7 @@ namespace YellowDuckyBot
                             {
                                 // Omit first one as it is a command
                                 var factName = daFact[1];
-                                var result = mind.Facts.Read(factName);
+                                var result = _mind.Facts.Read(factName);
                                 response = result != null
                                     ? $"Fact {factName} is {result}."
                                     : $"Fact {factName} doesn't exist.";
@@ -151,7 +151,7 @@ namespace YellowDuckyBot
                             {
                                 // Omit first one as it is a command
                                 var factName = daFact[1];
-                                var result = mind.Facts.Remove(factName);
+                                var result = _mind.Facts.Remove(factName);
                                 response = result
                                     ? $"Fact {factName} was forgotten."
                                     : $"Fact {factName} doesn't exist.";
@@ -165,7 +165,7 @@ namespace YellowDuckyBot
                             if (daFact.Length == 1)
                             {
                                 // Omit first one as it is a command
-                                var count = mind.Facts.Count();
+                                var count = _mind.Facts.Count();
                                 response = $"Facts base contains {count} facts.";
                                 await context.SendActivity(response);
                                 return;
@@ -183,7 +183,7 @@ namespace YellowDuckyBot
                         // TODO Add some admin-mode with prior authorization
                         // TODO Add console entry level of extending retorts
                         case "how many retorts?":
-                            response = $"I've {mind.CountRetorts()} retorts in my mind.";
+                            response = $"I've {_mind.CountRetorts()} retorts in my mind.";
                             break;
 
                         case "ping":
@@ -192,19 +192,19 @@ namespace YellowDuckyBot
                         
                         // TODO change it to game of Lycopersicon
                         case "let's play lycopersicon":
-                            var playLycopersiconResult = mind.Facts.Add("playingLycopersicon","true");
+                            var playLycopersiconResult = _mind.Facts.Add("playingLycopersicon","true");
                             response = playLycopersiconResult ? "Ok.. Lycopersicon" : "Hmm.. something is wrong wit that game.";
                             break;
 
                         case "lycopersicon":
-                            playingLycopersiconResult = mind.Facts.Read("playingLycopersicon");
+                            playingLycopersiconResult = _mind.Facts.Read("playingLycopersicon");
                             if (playingLycopersiconResult != null && playingLycopersiconResult.Equals("true"))
                             {
-                                var stopPlayLycopersiconResult = mind.Facts.Remove("playingLycopersicon");
+                                var stopPlayLycopersiconResult = _mind.Facts.Remove("playingLycopersicon");
                                 if (stopPlayLycopersiconResult)
                                 {
                                     // TODO CANNOT STOP PLAYING..
-                                    var playedLycopersiconResult = mind.Facts.Add("playedLycopersicon", "true");
+                                    var playedLycopersiconResult = _mind.Facts.Add("playedLycopersicon", "true");
                                     response = playedLycopersiconResult ? 
                                         "Ha ha, you lost. I'll remember that." 
                                         : "Ha ha, you lost... Wait, what just happened?";
@@ -216,7 +216,7 @@ namespace YellowDuckyBot
                             }
                             else
                             {
-                                playLycopersiconResult = mind.Facts.Add("playingLycopersicon","true");
+                                playLycopersiconResult = _mind.Facts.Add("playingLycopersicon","true");
                                 response = playLycopersiconResult ? "Ok.. Lycopersicon" : "Hmm.. something is wrong wit that game.";
                             }
                             break;

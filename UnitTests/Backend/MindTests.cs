@@ -52,7 +52,7 @@ namespace UnitTests.Backend
         public void AddRetortWithNullsTest(string question, string answer)
         {
             // Align
-            Mind mind = Mind.Instance;
+            var mind = Mind.Instance;
             // Act
             var actual = mind.AddRetort(question, answer);
             // Assert
@@ -87,12 +87,14 @@ namespace UnitTests.Backend
         {
             // Align
             var mind = Mind.Instance;
+            var now = DateTime.Now.ToString("yyyyMMddHHmmssffff");
             // Act
             var valueBefore = mind.RetortsMaxId();
-            mind.RefreshRetortMaxId();
+            var added = mind.AddRetort("smt1", now);
             var actual = mind.RetortsMaxId();
             // Assert
-            Assert.Equal(valueBefore, actual);
+            Assert.True(added);
+            Assert.Equal(valueBefore, actual - 1);
         }
     }
 }
